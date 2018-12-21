@@ -1,0 +1,7 @@
+C:\Users\Vitalia\Downloads\MovementsTest (2)\Movements\obj\Debug\Movements.csprojResolveAssemblyReference.cache
+C:\Users\Vitalia\Downloads\MovementsTest (2)\Movements\obj\Debug\Movements.csproj.CoreCompileInputs.cache
+C:\Users\Vitalia\Downloads\MovementsTest (2)\Movements\bin\Debug\Movements.exe.config
+C:\Users\Vitalia\Downloads\MovementsTest (2)\Movements\bin\Debug\Movements.exe
+C:\Users\Vitalia\Downloads\MovementsTest (2)\Movements\bin\Debug\Movements.pdb
+C:\Users\Vitalia\Downloads\MovementsTest (2)\Movements\obj\Debug\Movements.exe
+C:\Users\Vitalia\Downloads\MovementsTest (2)\Movements\obj\Debug\Movements.pdb

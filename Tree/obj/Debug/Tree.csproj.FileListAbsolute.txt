@@ -1,0 +1,7 @@
+C:\Users\Vitalia\source\repos\MovementsTest (2)\Tree\bin\Debug\Tree.exe.config
+C:\Users\Vitalia\source\repos\MovementsTest (2)\Tree\bin\Debug\Tree.exe
+C:\Users\Vitalia\source\repos\MovementsTest (2)\Tree\bin\Debug\Tree.pdb
+C:\Users\Vitalia\source\repos\MovementsTest (2)\Tree\obj\Debug\Tree.csprojResolveAssemblyReference.cache
+C:\Users\Vitalia\source\repos\MovementsTest (2)\Tree\obj\Debug\Tree.csproj.CoreCompileInputs.cache
+C:\Users\Vitalia\source\repos\MovementsTest (2)\Tree\obj\Debug\Tree.exe
+C:\Users\Vitalia\source\repos\MovementsTest (2)\Tree\obj\Debug\Tree.pdb
