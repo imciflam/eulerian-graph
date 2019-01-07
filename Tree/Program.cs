@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -30,12 +30,7 @@ namespace Vitacore
 
             PrintTree(root);
             Console.WriteLine();
-            List<Tree<T>> ll = new List<Tree<T>>(GetAll<T>(root, 0));
-            foreach (Tree<T> element in ll)
-            {
-                Console.WriteLine(element.Data);
-
-            }
+            List<Tree<T>> ll = new List<Tree<T>>(GetAll<T>(root, 0)); 
             PrintTree(root);
             return;
         }
@@ -61,9 +56,15 @@ namespace Vitacore
                 }
 
                 curr = s.Pop();
-                 
+                //(s.Contains(curr)) 
                 if (curr.Data as string == "10")
                 { 
+                    while (curr.Parent.Neighbour  != null)
+                    {
+                        curr = curr.Parent; 
+                        curr.Neighbour = null;
+                        //curr.Neighbour.Data = default(T);
+                    }
                     break;
                 } 
                 curr.Neighbour = FindRightSibling(curr, 0);
@@ -77,7 +78,9 @@ namespace Vitacore
 
         static Tree<T> FindRightSibling<T>(Tree<T> root, int level)
         {
-            if (root == null || root.Parent == null)
+
+            Console.WriteLine(root.Data);
+            if (root == null || root.Parent == null|| root == root.Parent)
             {
                 return null;
             }
