@@ -39,84 +39,58 @@ namespace Vitacore
 
         static IEnumerable<Tree<T>> GetAll<T>(Tree<T> root)
         {
-            Tree<T> pre;
-            if (root == null)
-            {
-                yield return null;
-            }
-              
-            while (root != null)
-            {
 
-                if (root.Data as string == "10")
+
+            Tree<T> cur = root;
+            while (cur != null)
+            {
+                if (cur.Data as string == "10")
                 {
-                    while (root.Parent.Neighbour != null)
+                    while (cur.Parent.Neighbour != null)
                     {
-                        root = root.Parent;
-                        root.Neighbour = null;
+                        cur = cur.Parent;
+                        cur.Neighbour = null;
                     }
+                    if (cur.Parent.Neighbour == null)
+                    {
+                        while (cur.Parent.Left != null)
+                        {
+                            cur.Parent = cur.Parent.Left;
+                            cur.Parent.Neighbour = FindRightSibling(cur.Parent, 0);
+
+                        }
+                    }
+
                     break;
                 }
-
-
-                if (root.Data as string == "11")
+                if (cur.Left == null)
                 { 
-                    root.Neighbour = FindRightSibling(root, 0);
-                }
-
-                if (root.Left == null)
-                {
-                     
-                    root.Neighbour = FindRightSibling(root, 0); 
-                    root = root.Right;
+                    cur.Neighbour = FindRightSibling(cur, 0);
+                    cur = cur.Right;
                 }
                 else
                 {
-                    pre = root.Left;
-                    while (pre.Right != null && pre.Right != root)
-                    pre = pre.Right;
-                    
-                    if (pre.Right == null)
+                    Tree<T> pre = cur.Left;
+                    while (pre.Right != null && pre.Right != cur)
                     {
-                        pre.Right = root;
-                        root = root.Left;
-                    } 
-                    else
+                        pre = pre.Right;
+                    }
+                    if (pre.Right == cur)
                     {
                         pre.Right = null; 
-                        root = root.Right;
-                        root.Neighbour = FindRightSibling(root, 0); 
+                        cur = cur.Right;
                     }
-                } 
+                    else
+                    {
+                        pre.Right = cur;    
+                        cur.Neighbour = FindRightSibling(cur, 0);
+                        cur = cur.Left;
+                    }
+                }
             }
-             
+            
 
-            /* Stack<Tree<T>> s = new Stack<Tree<T>>();
-             Tree<T> curr = root;
-             while (curr != null || s.Count > 0)
-             {
-                 while (curr != null)
-                 {
-                     s.Push(curr);
-                     curr = curr.Left;
-                 }
-
-                 curr = s.Pop();
-                 if (curr.Data as string == "10")
-                 { 
-                     while (curr.Parent.Neighbour  != null)
-                     {
-                         curr = curr.Parent; 
-                         curr.Neighbour = null;
-                     }
-                     break;
-                 } 
-                 curr.Neighbour = FindRightSibling(curr, 0);
-                 curr = curr.Right;
-             }  
-             */
-
-             yield return root;
+            yield return root;
 
         }
 
