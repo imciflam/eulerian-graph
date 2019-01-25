@@ -30,97 +30,117 @@ namespace Vitacore
 
             PrintTree(root);
             Console.WriteLine();
-            List<Tree<T>> ll = new List<Tree<T>>(GetAll<T>(root, 0)); 
+            List<Tree<T>> ll = new List<Tree<T>>(GetAll<T>(root)); 
             PrintTree(root);
             return;
         }
-        //TODO
 
 
-        static IEnumerable<Tree<T>> GetAll<T>(Tree<T> root, int level)
+
+        static IEnumerable<Tree<T>> GetAll<T>(Tree<T> root)
         {
             if (root == null)
             {
                 yield return null;
             }
 
-            Stack<Tree<T>> s = new Stack<Tree<T>>();
-            Tree<T> curr = root;
+            Queue<Tree<T>> q = new Queue<Tree<T>>();
+            q.Enqueue(root);
+            q.Enqueue(null);
 
-            while (curr != null || s.Count > 0)
+            while (q.Count != 0)
             {
-                while (curr != null)
+                Tree<T> curr = q.Peek();
+                q.Dequeue();
+
+                if (curr != null)
                 {
-                    s.Push(curr);
-                    curr = curr.Left;
-                }
+                    curr.Neighbour = q.Peek();
 
-                curr = s.Pop();
-                //(s.Contains(curr)) 
-                if (curr.Data as string == "10")
-                { 
-                    while (curr.Parent.Neighbour  != null)
+                    if (curr.Left != null)
                     {
-                        curr = curr.Parent; 
-                        curr.Neighbour = null;
-                        //curr.Neighbour.Data = default(T);
+                        q.Enqueue(curr.Left);
                     }
-                    break;
-                } 
-                curr.Neighbour = FindRightSibling(curr, 0);
-                curr = curr.Right;
-            }  
-
+                    if (curr.Right != null)
+                    {
+                        q.Enqueue(curr.Right);
+                    }
+                }
+                else if (q.Count != 0)
+                {
+                    q.Enqueue(null);
+                }
+            }
 
             yield return root;
-
         }
 
-        static Tree<T> FindRightSibling<T>(Tree<T> root, int level)
-        {
+         
 
-            Console.WriteLine(root.Data);
-            if (root == null || root.Parent == null|| root == root.Parent)
-            {
-                return null;
-            }
 
-            while (root.Parent.Right == root || (root.Parent.Right == null && root.Parent.Left == root))
-            {
-                if (root.Parent == null)
+        //TODO
+
+        /*
+                static IEnumerable<Tree<T>> GetAll<T>(Tree<T> root)
                 {
-                    return null;
+                    if (root == null)
+                    {
+                        yield return null;
+                    }
+
+                   Stack<Tree<T>> s = new Stack<Tree<T>>();
+                    Queue<Tree<T>> q = new Queue<Tree<T>>();
+                    Tree<T> curr = root;
+
+                    while (curr != null || s.Count > 0)
+                    {
+                        while (curr != null)
+                        {
+
+                            s.Push(curr);
+                            curr = curr.Left;
+                        } 
+                         curr = s.Pop();
+                        if (curr.Data as string == "10")
+                        { 
+                            while (curr.Parent.Neighbour  != null)
+                            {
+                                curr = curr.Parent; 
+                                curr.Neighbour = null; 
+                            }
+                            break;
+                        } 
+                        FindRightSibling(curr);
+                        curr = curr.Right;
+                    }  
+
+
+                    yield return root;
+
                 }
 
-                root = root.Parent;
-                level--;
-            } 
-            root = root.Parent.Right;
-             
-            while (level < 0)
-            {
-                if (root.Left != null)
+                static void  FindRightSibling<T>(Tree<T> root)
                 {
-                    root = root.Left;
-                }
-                else if (root.Right != null)
-                {
-                    root = root.Right;
-                }
-                else
-                { 
-                    break;
-                }
 
-                level++;
-            }
+                    //ok for a full tree
+                    if (root == null)
+                    {
+                        return;
+                    } 
+                    if (root.Left != null)
+                    {
+                        root.Left.Neighbour = root.Right;
+                    }
 
-            if (level == 0)
-            {
-                return root;
-            } 
-            return FindRightSibling(root, level);
-        }
+                    if (root.Right != null)
+                    {
+                        root.Right.Neighbour = (root.Neighbour != null) ? root.Neighbour.Left : null;
+                    }
+
+
+                    FindRightSibling(root.Left);
+                    FindRightSibling(root.Right);
+                }*/
 
 
         #region tree
