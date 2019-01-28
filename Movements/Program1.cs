@@ -142,6 +142,8 @@ namespace Movements
         /// <returns>Результат в виде списка индексов переходов между отделениями в исходном массиве</returns>
         static List<int[]> FindMovements(string firstDivision, Movement[] ms)
         {
+            //visit every node in graph
+            //graph nodes list
             List<string> visit = new List<string>();
             foreach (var element in ms)
             {
