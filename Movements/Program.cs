@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Diagnostics;
 using System.Text;
 
@@ -53,7 +54,7 @@ namespace Movements
 
                 // поиск вариантов переходов
                // Stopwatch start = Stopwatch.StartNew();
-                //List<int[]> result = FindMovements(begin, ms);
+                List<int[]> result = FindMovements(begin, ms);
                // start.Stop();
               //  Console.WriteLine(start);
 
@@ -140,9 +141,54 @@ namespace Movements
         /// <param name="firstDivision">Первое отделение (откуда старт)</param>
         /// <param name="ms">Движения между отделениями</param>
         /// <returns>Результат в виде списка индексов переходов между отделениями в исходном массиве</returns>
-       /* static List<int[]> FindMovements(string firstDivision, Movement[] ms)
+        static List<int[]> FindMovements(string firstDivision, Movement[] ms)
         {
-            // TODO
-        }*/
+
+            /*var query = petsList.GroupBy(
+            pet => Math.Floor(pet.Age),
+      pet => pet.Age,
+      (baseAge, ages) => new
+      {
+          Key = baseAge,
+          Count = ages.Count(),
+          Min = ages.Min(),
+          Max = ages.Max()
+      });
+
+            // Iterate over each anonymous type.
+            foreach (var result in query)
+            {
+                Console.WriteLine("\nAge group: " + result.Key);
+                Console.WriteLine("Number of pets in this age group: " + result.Count);
+                Console.WriteLine("Minimum age: " + result.Min);
+                Console.WriteLine("Maximum age: " + result.Max);
+            }*/
+            List<Movement> MovementList = new List<Movement>();
+            //MovementList.Add(ms);
+
+
+            //visit every node in graph
+            //graph nodes list 
+            List<string> visit = new List<string>();
+            foreach (var element in ms)
+            { 
+                Console.WriteLine(element.index);
+                if (visit.Contains(element.From) == false)
+                {
+                    visit.Add(element.From);
+                }
+                if (visit.Contains(element.To) == false)
+                {
+                    visit.Add(element.To);
+                }
+            }
+
+            foreach (var element in visit)
+            {
+                Console.WriteLine(element); 
+            }
+
+            return null;
+        }
     }
 }
