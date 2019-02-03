@@ -1,194 +1,169 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Diagnostics;
 using System.Text;
+using System.Threading.Tasks;
 
-namespace Movements
+namespace ConsoleApp10
 {
     class Program
     {
-        /// <summary>
-        /// Движение между отделениями
-        /// </summary>
-        class Movement
+        public class Graph<T>
         {
-            /// <summary>
-            /// Отделение откуда
-            /// </summary>
-            public string From;
-            /// <summary>
-            /// Отделение куда
-            /// </summary>
-            public string To;
-            /// <summary>
-            /// Индекс перехода
-            /// </summary>
-            public int index;
+            public Dictionary<T, HashSet<T>> AdjacencyList { get; } = new Dictionary<T, HashSet<T>>();
 
-            // Можно добавлять в класс вспомогательные члены
-        }
+            public Graph() { }
 
-        static void Main(string[] args)
-        {
-            try
+            public Graph(IEnumerable<T> vertices, IEnumerable<Tuple<T, T>> edges)
             {
-                //Movement[] ms = new Movement[]
-                //{
-                //    new Movement() { From = "334", To = "331", index = 0 },
-                //    new Movement() { From = "331", To = "334", index = 1 },
-                //    new Movement() { From = "332", To = "331", index = 2 },
-                //    //new Movement() { From = "125", To = "112", index = 4 }
-                //};
-                //string begin = "332";
-
-                string[] ff = System.IO.File.ReadAllLines(@"..\..\movements2.txt");
-                Movement[] ms = new Movement[ff.Length];
-                for (int i = 0; i < ff.Length; i++)
+                foreach (var vertex in vertices)
                 {
-                    string[] ss = ff[i].Split(';');
-                    ms[i] = new Movement() { From = ss[0], To = ss[1], index = i };
+                    AddVertex(vertex);
+                    Console.WriteLine(vertex);
                 }
-                string begin = ms[0].From;
 
+                foreach (var edge in edges)
+                {
+                    AddEdge(edge);
+                    Console.WriteLine(edge);
+                }
+            }
 
-                // поиск вариантов переходов
-               // Stopwatch start = Stopwatch.StartNew();
-                List<int[]> result = FindMovements(begin, ms);
-               // start.Stop();
-              //  Console.WriteLine(start);
+            public void AddVertex(T vertex)
+            {
+                AdjacencyList[vertex] = new HashSet<T>();
+            }
 
-                // печать результатов
-               // PrintResults(ms, begin, result);
+            public void AddEdge(Tuple<T, T> edge)
+            {
+                if (AdjacencyList.ContainsKey(edge.Item1) && AdjacencyList.ContainsKey(edge.Item2))
+                {
+                    AdjacencyList[edge.Item1].Add(edge.Item2);
+                    //AdjacencyList[edge.Item2].Add(edge.Item1);
+                }
+            }
+        }
+         
+            public static void Main(string[] args)
+            {
+             
+               // string[] ff = System.IO.File.ReadAllLines(@"..\..\movements2.txt");
+               
+                var vertices = new[] { 6, 19, 14, 28, 3, 25, 13, 17, 10, 0, 20, 7, 4, 15, 23, 22 };
+                var edges = new[] {
+                Tuple.Create(6, 19),
+                Tuple.Create(19, 14),
+                Tuple.Create(14, 28),
+                Tuple.Create(28, 3),
+                Tuple.Create(3, 25),
+                Tuple.Create(25, 13),
+                Tuple.Create(13, 17),
+                Tuple.Create(17, 10),
+                Tuple.Create(10, 0),
+                Tuple.Create(0, 0),
+                Tuple.Create(0, 10),
+                Tuple.Create(10, 0),
+                Tuple.Create(0, 25),
+                Tuple.Create(25, 19),
+                Tuple.Create(19, 20),
+                Tuple.Create(20, 7),
+                Tuple.Create(7, 6),
+                Tuple.Create(6, 6),
+                Tuple.Create(6, 4),
+                Tuple.Create(4, 4),
+                Tuple.Create(4, 15),
+                Tuple.Create(15, 23),
+                Tuple.Create(23, 22),
+                Tuple.Create(22, 25),
+                Tuple.Create(25, 14),
+                Tuple.Create(14, 10),
+                Tuple.Create(10, 15),
+                Tuple.Create(15, 15),
+                Tuple.Create(15, 4),
+                Tuple.Create(4, 10)
+            };
 
-                Console.WriteLine("\nГотово!");
+                var graph = new Graph<int>(vertices, edges);
+
+                Console.WriteLine(string.Join(", ", BFS(graph, 6)));
+                // 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
+
+                Console.WriteLine(string.Join(", ", DFS(graph, 6)));
+                // 1, 3, 6, 5, 8, 9, 10, 7, 4, 2
+
                 Console.ReadKey();
             }
-            catch (Exception exp)
+
+            // using HashSet for O(1) access and loop operations
+            public static HashSet<T> BFS<T>(Graph<T> graph, T start)
             {
-                Console.WriteLine(exp.ToString());
-            }
-        }
+                var visited = new HashSet<T>();
 
-        /// <summary>
-        /// Печать результатов
-        /// </summary>
-        /// <param name="ms">Движения между отделениями</param>
-        /// <param name="begin">Первое отделение (откуда старт)</param>
-        /// <param name="result">Результат выполнения функции FindMovements()</param>
-        static void PrintResults(Movement[] ms, string begin, List<int[]> result)
-        {
-            Console.WriteLine(result.Count);
-            //return;
-
-
-            if (result == null || result.Count == 0)
-            {
-                Console.WriteLine("Переходов не найдено.");
-            }
-            else
-            {
-                Console.WriteLine("Найденные переходы:");
-
-                foreach (int[] list in result)
+                if (!graph.AdjacencyList.ContainsKey(start))
                 {
-                    Movement prev = null;
-                    for (int i = 0; i < ms.Length; i++)
-                    {
-                        if (i >= list.Length)
-                        {
-                            Console.Write("Ошибка: отсутствует переход.");
-                        }
-                        else
-                        {
-                            int idx = list[i];
-                            if (idx < 0 || idx >= ms.Length)
-                            {
-                                Console.Write("Ошибка: индекс за пределами диапазона.");
-                            }
-                            else
-                            {
-                                Movement movement = ms[idx];
-                                //Console.Write(movement.From);
-                                //Console.Write(" -> ");
-                                //Console.Write(movement.To);
+                    return visited;
+                }
 
-                                string b = prev == null ? begin : prev.To;
+                var queue = new Queue<T>();
+                queue.Enqueue(start);
 
-                                // проверка с предыдущим
-                                if (movement.From != b)
-                                {
-                                    Console.Write(" ОШИБКА!");
-                                }
-                                prev = movement;
-                            }
-                        }
-                        //Console.WriteLine();
-                    }
-                    if (list.Length > ms.Length)
+                while (queue.Count > 0)
+                {
+                    var vertex = queue.Dequeue();
+
+                    if (visited.Contains(vertex))
                     {
-                        Console.WriteLine("Ошибка: имеются лишние переходы.");
+                        continue;
                     }
 
-                    //Console.WriteLine();
+                    visited.Add(vertex);
+
+                    foreach (var neighbor in graph.AdjacencyList[vertex])
+                    {
+                        if (!visited.Contains(neighbor))
+                        {
+                            queue.Enqueue(neighbor);
+                        }
+                    }
                 }
+
+                return visited;
+            }
+
+            // using HashSet for O(1) access and loop operations
+            public static HashSet<T> DFS<T>(Graph<T> graph, T start)
+            {
+                var visited = new HashSet<T>();
+
+                if (!graph.AdjacencyList.ContainsKey(start))
+                {
+                    return visited;
+                }
+
+                var stack = new Stack<T>();
+                stack.Push(start);
+
+                while (stack.Count > 0)
+                {
+                    var vertex = stack.Pop();
+
+                    if (visited.Contains(vertex))
+                    {
+                        continue;
+                    }
+
+                    visited.Add(vertex);
+
+                    foreach (var neighbor in graph.AdjacencyList[vertex])
+                    {
+                        if (!visited.Contains(neighbor))
+                        {
+                            stack.Push(neighbor);
+                        }
+                    }
+                }
+
+                return visited;
             }
         }
-
-        /// <summary>
-        /// Поиск всех вариантов движения, начиная с указанного отделения.
-        /// </summary>
-        /// <param name="firstDivision">Первое отделение (откуда старт)</param>
-        /// <param name="ms">Движения между отделениями</param>
-        /// <returns>Результат в виде списка индексов переходов между отделениями в исходном массиве</returns>
-        static List<int[]> FindMovements(string firstDivision, Movement[] ms)
-        {
-
-            /*var query = petsList.GroupBy(
-            pet => Math.Floor(pet.Age),
-      pet => pet.Age,
-      (baseAge, ages) => new
-      {
-          Key = baseAge,
-          Count = ages.Count(),
-          Min = ages.Min(),
-          Max = ages.Max()
-      });
-
-            // Iterate over each anonymous type.
-            foreach (var result in query)
-            {
-                Console.WriteLine("\nAge group: " + result.Key);
-                Console.WriteLine("Number of pets in this age group: " + result.Count);
-                Console.WriteLine("Minimum age: " + result.Min);
-                Console.WriteLine("Maximum age: " + result.Max);
-            }*/
-            List<Movement> MovementList = new List<Movement>();
-            //MovementList.Add(ms);
-
-
-            //visit every node in graph
-            //graph nodes list 
-            List<string> visit = new List<string>();
-            foreach (var element in ms)
-            { 
-                Console.WriteLine(element.index);
-                if (visit.Contains(element.From) == false)
-                {
-                    visit.Add(element.From);
-                }
-                if (visit.Contains(element.To) == false)
-                {
-                    visit.Add(element.To);
-                }
-            }
-
-            foreach (var element in visit)
-            {
-                Console.WriteLine(element); 
-            }
-
-            return null;
-        }
-    }
-}
+    } 
