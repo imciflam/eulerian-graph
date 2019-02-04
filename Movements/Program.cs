@@ -4,15 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ConsoleApp10
+namespace Vitacore
 {
     class Program
     {
         public class Graph<T>
         {
             public Dictionary<T, HashSet<T>> AdjacencyList { get; } = new Dictionary<T, HashSet<T>>();
-
-            public Graph() { }
 
             public Graph(IEnumerable<T> vertices, IEnumerable<Tuple<T, T>> edges)
             {
@@ -38,8 +36,7 @@ namespace ConsoleApp10
             {
                 if (AdjacencyList.ContainsKey(edge.Item1) && AdjacencyList.ContainsKey(edge.Item2))
                 {
-                    AdjacencyList[edge.Item1].Add(edge.Item2);
-                    //AdjacencyList[edge.Item2].Add(edge.Item1);
+                    AdjacencyList[edge.Item1].Add(edge.Item2);//откуда и куда
                 }
             }
         }
@@ -47,10 +44,27 @@ namespace ConsoleApp10
             public static void Main(string[] args)
             {
              
-               // string[] ff = System.IO.File.ReadAllLines(@"..\..\movements2.txt");
-               
-                var vertices = new[] { 6, 19, 14, 28, 3, 25, 13, 17, 10, 0, 20, 7, 4, 15, 23, 22 };
-                var edges = new[] {
+               string[] ff = System.IO.File.ReadAllLines(@"..\..\movements2.txt"); 
+               List<int> x = new List<int>();
+               List<int> y = new List<int>();
+               for (int i = 0; i < ff.Length; i++)
+                   {
+                    string[] ss = ff[i].Split(';'); 
+                    x.Add(Convert.ToInt32(ss[0]));
+                    y.Add(Convert.ToInt32(ss[1]));
+                }
+                List<int> z = x.Concat(y).Distinct().ToList();
+                Console.WriteLine(z.Count);
+                int[] vertices = z.ToArray();
+
+                var edges = new Tuple<int, int>[ff.Length];
+                for (int i = 0; i < ff.Length; i++)
+                {
+                    string[] ss = ff[i].Split(';');
+                    edges[i] = Tuple.Create(Convert.ToInt32(ss[0]), Convert.ToInt32(ss[1]));  
+                 } 
+                 
+           /* var edges = new[] {
                 Tuple.Create(6, 19),
                 Tuple.Create(19, 14),
                 Tuple.Create(14, 28),
@@ -81,15 +95,13 @@ namespace ConsoleApp10
                 Tuple.Create(15, 15),
                 Tuple.Create(15, 4),
                 Tuple.Create(4, 10)
-            };
+            };*/
 
                 var graph = new Graph<int>(vertices, edges);
 
-                Console.WriteLine(string.Join(", ", BFS(graph, 6)));
-                // 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
+                Console.WriteLine(string.Join(", ", BFS(graph, 6))); 
 
-                Console.WriteLine(string.Join(", ", DFS(graph, 6)));
-                // 1, 3, 6, 5, 8, 9, 10, 7, 4, 2
+                Console.WriteLine(string.Join(", ", DFS(graph, 6))); 
 
                 Console.ReadKey();
             }
@@ -158,7 +170,7 @@ namespace ConsoleApp10
                     {
                         if (!visited.Contains(neighbor))
                         {
-                            stack.Push(neighbor);
+                            stack.Push(neighbor);//всех соседей
                         }
                     }
                 }
