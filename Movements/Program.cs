@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -146,8 +146,9 @@ namespace Vitacore
                             {
                             }
                         }
-                                DFS(graph, neighbor);
+                                
                     }
+               // DFS(graph, neighbor);
                  }
                 return visited;
             }
