@@ -8,8 +8,13 @@ namespace Vitacore
 {
     class Program
     {
+
+        //копировать массивы как вариант
+        int counter = 0;
         public class Graph<T>
         {
+
+
             public Dictionary<T, HashSet<T>> AdjacencyList { get; } = new Dictionary<T, HashSet<T>>();
 
             public Graph(IEnumerable<T> vertices, IEnumerable<Tuple<T, T>> edges)
@@ -40,6 +45,7 @@ namespace Vitacore
                 }
             }
         }
+
          
             public static void Main(string[] args)
             {
@@ -62,40 +68,7 @@ namespace Vitacore
                 {
                     string[] ss = ff[i].Split(';');
                     edges[i] = Tuple.Create(Convert.ToInt32(ss[0]), Convert.ToInt32(ss[1]));  
-                 } 
-                 
-           /* var edges = new[] {
-                Tuple.Create(6, 19),
-                Tuple.Create(19, 14),
-                Tuple.Create(14, 28),
-                Tuple.Create(28, 3),
-                Tuple.Create(3, 25),
-                Tuple.Create(25, 13),
-                Tuple.Create(13, 17),
-                Tuple.Create(17, 10),
-                Tuple.Create(10, 0),
-                Tuple.Create(0, 0),
-                Tuple.Create(0, 10),
-                Tuple.Create(10, 0),
-                Tuple.Create(0, 25),
-                Tuple.Create(25, 19),
-                Tuple.Create(19, 20),
-                Tuple.Create(20, 7),
-                Tuple.Create(7, 6),
-                Tuple.Create(6, 6),
-                Tuple.Create(6, 4),
-                Tuple.Create(4, 4),
-                Tuple.Create(4, 15),
-                Tuple.Create(15, 23),
-                Tuple.Create(23, 22),
-                Tuple.Create(22, 25),
-                Tuple.Create(25, 14),
-                Tuple.Create(14, 10),
-                Tuple.Create(10, 15),
-                Tuple.Create(15, 15),
-                Tuple.Create(15, 4),
-                Tuple.Create(4, 10)
-            };*/
+                 }  
 
                 var graph = new Graph<int>(vertices, edges);
 
@@ -105,13 +78,12 @@ namespace Vitacore
 
                 Console.ReadKey();
             }
-
-            // using HashSet for O(1) access and loop operations
+         
             public static HashSet<T> BFS<T>(Graph<T> graph, T start)
             {
-                var visited = new HashSet<T>();
+                var visited = new HashSet<T>();//уже посетили, без дублей - O(1)
 
-                if (!graph.AdjacencyList.ContainsKey(start))
+            if (!graph.AdjacencyList.ContainsKey(start))
                 {
                     return visited;
                 }
@@ -134,18 +106,17 @@ namespace Vitacore
                     {
                         if (!visited.Contains(neighbor))
                         {
-                            queue.Enqueue(neighbor);
-                        }
+                            queue.Enqueue(neighbor);//всех соседей
+                    }
                     }
                 }
 
                 return visited;
             }
 
-            // using HashSet for O(1) access and loop operations
             public static HashSet<T> DFS<T>(Graph<T> graph, T start)
-            {
-                var visited = new HashSet<T>();
+        { 
+            var visited = new HashSet<T>();
 
                 if (!graph.AdjacencyList.ContainsKey(start))
                 {
@@ -166,15 +137,18 @@ namespace Vitacore
 
                     visited.Add(vertex);
 
-                    foreach (var neighbor in graph.AdjacencyList[vertex])
-                    {
+                     foreach (var neighbor in graph.AdjacencyList[vertex])
+                    { 
                         if (!visited.Contains(neighbor))
-                        {
+                        { 
                             stack.Push(neighbor);//всех соседей
+                            //while (neighbor as string != "15")
+                            {
+                            }
                         }
+                                DFS(graph, neighbor);
                     }
-                }
-
+                 }
                 return visited;
             }
         }
