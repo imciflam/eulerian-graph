@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -72,13 +72,14 @@ namespace Vitacore
 
                 var graph = new Graph<int>(vertices, edges);
 
-                Console.WriteLine(string.Join(", ", BFS(graph, 6))); 
-
-                Console.WriteLine(string.Join(", ", DFS(graph, 6))); 
-
+                Console.WriteLine(string.Join(", ", BFS(graph, 6)));
+                var path = DFS(graph, 6);
+                Console.WriteLine(string.Join(", ", path));
+                //allDFS(graph, 6);
                 Console.ReadKey();
-            }
-         
+        }
+    //6, 19, 4, 14, 20, 15, 10, 28, 7, 23, 0, 3, 22, 25, 13, 17     
+            
             public static HashSet<T> BFS<T>(Graph<T> graph, T start)
             {
                 var visited = new HashSet<T>();//уже посетили, без дублей - O(1)
@@ -112,10 +113,19 @@ namespace Vitacore
                 }
 
                 return visited;
-            }
+        }
 
-            public static HashSet<T> DFS<T>(Graph<T> graph, T start)
-        { 
+
+        public static int allDFS<T>(Graph<T> graph, T start)
+        {
+            int pathNumber = 0;
+            DFS(graph, start);
+            return pathNumber;
+        }
+
+        //6, 4, 10, 15, 23, 22, 25, 14, 28, 3, 19, 20, 7, 13, 17, 0
+        public static HashSet<T> DFS<T>(Graph<T> graph, T start)
+            { 
             var visited = new HashSet<T>();
 
                 if (!graph.AdjacencyList.ContainsKey(start))
@@ -134,21 +144,20 @@ namespace Vitacore
                     {
                         continue;
                     }
-
+                    //каждый раз обновляется с вызовом метода, пофиксить
                     visited.Add(vertex);
-
+                    //graph.AdjacencyList[vertex].Reverse();
                      foreach (var neighbor in graph.AdjacencyList[vertex])
                     { 
                         if (!visited.Contains(neighbor))
                         { 
-                            stack.Push(neighbor);//всех соседей
-                            //while (neighbor as string != "15")
-                            {
-                            }
+                           stack.Push(neighbor);  
+                           Console.WriteLine(neighbor);
+                         //  DFS(graph, neighbor);
                         }
                                 
                     }
-               // DFS(graph, neighbor);
+
                  }
                 return visited;
             }
