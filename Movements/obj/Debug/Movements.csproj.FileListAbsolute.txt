@@ -12,3 +12,10 @@ C:\Users\x\Downloads\moar-structures-master\Movements\obj\Debug\Movements.csproj
 C:\Users\x\Downloads\moar-structures-master\Movements\obj\Debug\Movements.csproj.CoreCompileInputs.cache
 C:\Users\x\Downloads\moar-structures-master\Movements\obj\Debug\Movements.exe
 C:\Users\x\Downloads\moar-structures-master\Movements\obj\Debug\Movements.pdb
+C:\Users\x\Documents\GitHub\moar-structures\Movements\bin\Debug\Movements.exe.config
+C:\Users\x\Documents\GitHub\moar-structures\Movements\bin\Debug\Movements.exe
+C:\Users\x\Documents\GitHub\moar-structures\Movements\bin\Debug\Movements.pdb
+C:\Users\x\Documents\GitHub\moar-structures\Movements\obj\Debug\Movements.csprojAssemblyReference.cache
+C:\Users\x\Documents\GitHub\moar-structures\Movements\obj\Debug\Movements.csproj.CoreCompileInputs.cache
+C:\Users\x\Documents\GitHub\moar-structures\Movements\obj\Debug\Movements.exe
+C:\Users\x\Documents\GitHub\moar-structures\Movements\obj\Debug\Movements.pdb

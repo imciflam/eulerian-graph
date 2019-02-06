@@ -8,9 +8,14 @@ namespace Vitacore
 {
     class Program
     {
+         
+        public static class Globals
+        {
+            public static bool vis = false; // Modifiable
+        }
 
-        //копировать массивы как вариант
-        int counter = 0;
+
+        //копировать массивы как вариант 
         public class Graph<T>
         {
 
@@ -81,7 +86,7 @@ namespace Vitacore
     //6, 19, 4, 14, 20, 15, 10, 28, 7, 23, 0, 3, 22, 25, 13, 17     
             
             public static HashSet<T> BFS<T>(Graph<T> graph, T start)
-            {
+            { 
                 var visited = new HashSet<T>();//уже посетили, без дублей - O(1)
 
             if (!graph.AdjacencyList.ContainsKey(start))
@@ -124,9 +129,9 @@ namespace Vitacore
         }
 
         //6, 4, 10, 15, 23, 22, 25, 14, 28, 3, 19, 20, 7, 13, 17, 0
-        public static HashSet<T> DFS<T>(Graph<T> graph, T start)
+        public static HashSet<T> DFS<T>(Graph<T> graph, T start)//visited придется передавать?
             { 
-            var visited = new HashSet<T>();
+                var visited = new HashSet<T>();
 
                 if (!graph.AdjacencyList.ContainsKey(start))
                 {
@@ -139,21 +144,18 @@ namespace Vitacore
                 while (stack.Count > 0)
                 {
                     var vertex = stack.Pop();
-
-                    if (visited.Contains(vertex))
-                    {
-                        continue;
-                    }
-                    //каждый раз обновляется с вызовом метода, пофиксить
+                    Console.WriteLine(vertex); 
+                    //каждый раз обновляется с вызовом метода, пофиксить -иначе зациклится
                     visited.Add(vertex);
-                    //graph.AdjacencyList[vertex].Reverse();
+                    // graph.AdjacencyList[vertex].Reverse();
                      foreach (var neighbor in graph.AdjacencyList[vertex])
                     { 
                         if (!visited.Contains(neighbor))
                         { 
                            stack.Push(neighbor);  
-                           Console.WriteLine(neighbor);
-                         //  DFS(graph, neighbor);
+                           Globals.vis = true;
+                          // DFS(graph, neighbor);
+
                         }
                                 
                     }
