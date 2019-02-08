@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace ConsoleApp5
 {
@@ -112,30 +113,74 @@ namespace ConsoleApp5
         static void Main(string[] args)
         {
             List<Edge> edges = new List<Edge>();
-            List<List<int>> listWays = new List<List<int>>();  
+            List<List<int>> listWays = new List<List<int>>();
 
-            string[] ff = System.IO.File.ReadAllLines(@"..\..\movements2.txt"); 
+
+            //adding vertices
+            /*string[] ff = System.IO.File.ReadAllLines(@"..\..\movements2.txt");
+            List<int> x = new List<int>();
+            List<int> y = new List<int>();
+            for (int i = 0; i < ff.Length; i++)
+            {
+                string[] ss = ff[i].Split(';');
+                x.Add(Convert.ToInt32(ss[0]));
+                y.Add(Convert.ToInt32(ss[1]));
+            }
+            List<int> z = x.Concat(y).Distinct().ToList();
+            Console.WriteLine(z.Count);
+            int[] vertices = z.ToArray();*/
+
+
+            List<int> hardcodedvertices = new List<int>() { 6, 4, 19, 14, 20, 3, 28, 10 };
+            //var hardcodedvertices = new[] { 6, 4, 19, 14, 20, 3, 28, 10 };
+
+            //adding new tuple
+            /*string[] ff = System.IO.File.ReadAllLines(@"..\..\movements2.txt"); 
             for (int i = 0; i < ff.Length; i++)
             {
                 string[] ss = ff[i].Split(';');
                 edges.Add( new Edge(Convert.ToInt32(ss[0]), Convert.ToInt32(ss[1])));
-            } 
+            } */
             List<Edge> hardcodededges = new List<Edge>();
             hardcodededges.Add(new Edge(6,19));
+            hardcodededges.Add(new Edge(6,6));
+            hardcodededges.Add(new Edge(6,4));
             hardcodededges.Add(new Edge(19,14));
+            hardcodededges.Add(new Edge(19,20));
             hardcodededges.Add(new Edge(14,28));
-            hardcodededges.Add(new Edge(28,3));
-            hardcodededges.Add(new Edge(3,25));
-            hardcodededges.Add(new Edge(25,13));
-            hardcodededges.Add(new Edge(13, 17));
-            hardcodededges.Add(new Edge(6, 28)); 
-            hardcodededges.Add(new Edge(6, 6));
+            hardcodededges.Add(new Edge(14, 10));
+            hardcodededges.Add(new Edge(28, 3));
+            hardcodededges.Add(new Edge(3, 10));
+            hardcodededges.Add(new Edge(10, 20));
+            hardcodededges.Add(new Edge(20, 4));
+            hardcodededges.Add(new Edge(4, 6));
 
 
+            Ways(hardcodededges, 6, new List<int>(), listWays);
+
+            int counter = 0;
+            foreach (List<int> subList in listWays)
+            {
+                if (subList.Count == hardcodedvertices.Count)
+                {
+                    counter++; 
+                }
+
+                //foreach (int item in subList)
+                //{
+                //    Console.WriteLine(item);
+                //}
+            }
+
+            foreach (var i in listWays)
+            {
+                Print(i);
+                //if (listWays[i].Count = hardcodedvertices.Count)
 
 
-            Ways(edges, 6, new List<int>(), listWays);
-            foreach (var i in listWays) Print(i);
+            }
+
+            Console.WriteLine("vsego putey "+ counter);
             Console.ReadLine();
         }
     }
