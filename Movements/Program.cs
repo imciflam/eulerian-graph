@@ -113,7 +113,7 @@ namespace Vitacore
                         if (!visited.Contains(neighbor))
                         {
                             queue.Enqueue(neighbor);//всех соседей
-                    }
+                        }
                     }
                 }
 
@@ -129,9 +129,10 @@ namespace Vitacore
         }
 
         //6, 4, 10, 15, 23, 22, 25, 14, 28, 3, 19, 20, 7, 13, 17, 0
-        public static HashSet<T> DFS<T>(Graph<T> graph, T start)//visited придется передавать?
+        //6, 19, 14, 28, 3, 25, 13, 17, 10, 0, 15, 23, 22, 4, 20, 7 reversed
+        public static HashSet<T> DFS<T>(Graph<T> graph, T start)//visited передавать?
             { 
-                var visited = new HashSet<T>();
+                var visited = new HashSet<T>();//создается с каждым запуском -> глобально/изменить на свойство?
 
                 if (!graph.AdjacencyList.ContainsKey(start))
                 {
@@ -144,8 +145,7 @@ namespace Vitacore
                 while (stack.Count > 0)
                 {
                     var vertex = stack.Pop();
-                    Console.WriteLine(vertex); 
-                    //каждый раз обновляется с вызовом метода, пофиксить -иначе зациклится
+                    Console.WriteLine(vertex);  
                     visited.Add(vertex);
                     // graph.AdjacencyList[vertex].Reverse();
                      foreach (var neighbor in graph.AdjacencyList[vertex])
