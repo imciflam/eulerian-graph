@@ -13,6 +13,7 @@ function readLine(callback) {
 
 // TODO digi; 2016-04-08; добавить writeLine!!!
 
-module.exports = {
+module.exports = 
+{
     readLine,
 };
