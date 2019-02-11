@@ -6,12 +6,12 @@ namespace ConsoleApp5
 {
     class Edge
     {
-        public int u, v;
+        public int From, To;
 
-        public Edge(int u, int v)
+        public Edge(int From, int To)
         {
-            this.u = u;
-            this.v = v;
+            this.From = From;
+            this.To = To;
         }
     }
 
@@ -68,13 +68,13 @@ namespace ConsoleApp5
             {
                 if (!Find(list, numberEdge))
                 {
-                    if (edge.u == numberEdge)
+                    if (edge.From == numberEdge)
                     {
                         list.Add(numberEdge);
 
-                        if (!Find(list, edge.v))
+                        if (!Find(list, edge.To))
                         {
-                            Ways(edges, edge.v, list, listWays);
+                            Ways(edges, edge.To, list, listWays);
                         }
                         else
                         {
@@ -82,13 +82,13 @@ namespace ConsoleApp5
                         }
                         list.Remove(numberEdge);
                     }
-                    else if (edge.v == numberEdge)
+                    else if (edge.To == numberEdge)
                     {
                         list.Add(numberEdge);
 
-                        if (!Find(list, edge.u))
+                        if (!Find(list, edge.From))
                         {
-                            Ways(edges, edge.u, list, listWays);
+                            Ways(edges, edge.From, list, listWays);
                         }
                         else
                         {
