@@ -16,13 +16,13 @@ namespace Movements
             foreach (var vertex in vertices)
             {
                 AddVertex(vertex);
-                //Console.WriteLine(vertex);
+                Console.WriteLine(vertex);
             }
 
             foreach (var edge in edges)
             {
                 AddEdge(edge);
-                //Console.WriteLine(edge);
+                Console.WriteLine(edge);
             }
         }
 
@@ -213,17 +213,20 @@ namespace Movements
         {
             var counter = 0;
             //Console.WriteLine(graph.AdjacencyList[ms[0].From]); 
-            //var visited = new List<Movement>();
+
             var MyStack = new Stack<Movement>();
-            MyStack.Push(ms[2]);
+            MyStack.Push(ms[0]);
+
+            List<List<int>> ways = new List<List<int>>(); 
+            ways.Add(new List<int>());
+
             while (MyStack.Count > 0&&counter!=29)
             {
                 var edge = MyStack.Pop();
-
-                Console.WriteLine(edge.From+"-"+edge.To);
+               
+                ways[0].Add(edge.index);
                 counter++;
                 edge.visited = true; 
-                
                 var adj = ms.Where(mov => mov.From == edge.To);
                 foreach (var neighbor in adj)
                 { 
@@ -234,14 +237,18 @@ namespace Movements
                     }
                     else if (adj.Count()==0|| ms.All(u => u.visited == true))
                     {
-                        Console.WriteLine("outta options");
-                        //neighbor.visited = false; 
+                        Console.WriteLine("out of options");
+                        neighbor.visited = false; 
                     }
                 }
             }
             if (counter ==29)
-            {
-                Console.WriteLine("here");
+            { 
+                Console.WriteLine("completed");
+                foreach (var element in ways[0])
+                {
+                    Console.Write(element);
+                }
             }
             return null;
         } 
