@@ -175,7 +175,7 @@ namespace Movements
             {
                 foreach (var next in to)
                 {
-                    currentPath.Add(next.index);//
+                    currentPath.Add(next.index);//добавить все элементы в текущий лист
                     InspectPath(next.To, currentPath, ms, ref paths);//следующий - фром другой
                     currentPath.Remove(next.index);
                 }
