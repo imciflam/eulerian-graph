@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Text;
 
 namespace Movements
@@ -55,7 +56,7 @@ namespace Movements
                 Stopwatch start = Stopwatch.StartNew();
                 List<int[]> result = FindMovements(begin, ms);
                 start.Stop();
-                Console.WriteLine(start);
+                Console.WriteLine(start); 
 
                 // печать результатов
                 PrintResults(ms, begin, result);
@@ -142,15 +143,15 @@ namespace Movements
         /// <returns>Результат в виде списка индексов переходов между отделениями в исходном массиве</returns>
         static List<int[]> FindMovements(string firstDivision, Movement[] ms)
         {
-            string from = firstDivision;
-            List<int[]> paths = new List<int[]>();
-            var currentPath = new List<int>();
-            InspectPath(from, currentPath, ms, ref paths);
+            string from = firstDivision;//начало обхода
+            List<int[]> paths = new List<int[]>();//лист массивов проходов
+            var currentPath = new List<int>();//саблист текущего обхода
+            InspectPath(from, currentPath, ms, ref paths); 
             return paths;
         }
         static void InspectPath(string from, List<int> currentPath, Movement[] ms, ref List<int[]> paths)
         {
-            List<Movement> to = new List<Movement>();
+            List<Movement> to = new List<Movement>();//лист кабинетов куда
             foreach (var m in ms)
             {
                 if (from == m.From && !currentPath.Contains(m.index))
@@ -159,21 +160,20 @@ namespace Movements
                 }
             }
 
-            if (to.Count == 0)
+            if (to.Count == 0)//больше некуда идти, 30 элементов
             {
                 if (currentPath.Count == ms.Length)
                 {
-                    paths.Add(currentPath.ToArray());
-                }
-
+                    paths.Add(currentPath.ToArray());//добавить в лист проходов
+                } 
                 return;
             }
             else
             {
                 foreach (var next in to)
                 {
-                    currentPath.Add(next.index);
-                    InspectPath(next.To, currentPath, ms, ref paths);
+                    currentPath.Add(next.index);//
+                    InspectPath(next.To, currentPath, ms, ref paths);//следующий - фром другой
                     currentPath.Remove(next.index);
                 }
 
