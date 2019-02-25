@@ -165,8 +165,11 @@ namespace Movements
                 if (currentPath.Count == ms.Length)
                 {
                     paths.Add(currentPath.ToArray());//добавить в лист проходов
-                } 
-                return;
+                }
+                else
+                {
+                    return;
+                }
             }
             else
             {
