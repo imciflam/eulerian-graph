@@ -7,39 +7,42 @@ using System.Text;
 namespace Movements
 {
 
-    public class Graph<T>
-    {
-        public Dictionary<T, HashSet<T>> AdjacencyList { get; } = new Dictionary<T, HashSet<T>>();
+     
 
-        public Graph(IEnumerable<T> vertices, IEnumerable<Tuple<T, T>> edges)
+    class Program
+    {
+
+        class Graph<T>
+    {
+        public Dictionary<int, HashSet<Movement>> AdjacencyList { get; } = new Dictionary<int, HashSet<Movement>>();
+
+        public Graph(IEnumerable<int> vertices, IEnumerable<Movement> ms)
         {
             foreach (var vertex in vertices)
             {
                 AddVertex(vertex);
             }
 
-            foreach (var edge in edges)
+            foreach (var edge in ms)
             {
                 AddEdge(edge); 
             }
         }
 
-        public void AddVertex(T vertex)
+        public void AddVertex(int vertex)
         {
-            AdjacencyList[vertex] = new HashSet<T>();
+            AdjacencyList[vertex] = new HashSet<Movement>();
         }
 
-        public void AddEdge(Tuple<T, T> edge)
-        {
-            if (AdjacencyList.ContainsKey(edge.Item1) && AdjacencyList.ContainsKey(edge.Item2))
-            {
-                AdjacencyList[edge.Item1].Add(edge.Item2);//откуда и куда
-            }
+        public void AddEdge(Movement ms)
+        { 
+                Console.WriteLine(ms.From);//nenf
+              if (AdjacencyList.ContainsKey(Int32.Parse(ms.From)) && AdjacencyList.ContainsKey(Int32.Parse(ms.To)))
+              {
+               AdjacencyList[Int32.Parse(ms.From)].Add((ms));//откуда и куда
+              } 
         }
     }
-
-    class Program
-    {
         /// <summary>
         /// Движение между отделениями
         /// </summary>
@@ -85,9 +88,9 @@ namespace Movements
                     edges[i] = Tuple.Create(Convert.ToInt32(ss[0]), Convert.ToInt32(ss[1]));
                 }
 
-                var graph = new Graph<int>(vertices, edges);
-                 
-                Movement[] ms = new Movement[ff.Length];
+
+
+                var ms = new Movement[ff.Length];//Movement[] 
                 for (int i = 0; i < ff.Length; i++)
                 {
                     string[] ss = ff[i].Split(';');
@@ -95,6 +98,10 @@ namespace Movements
                 }
                 string begin = ms[0].From;
 
+
+
+                var graph = new Graph<int>(vertices, ms);
+                 
 
                 // поиск вариантов переходов
                 Stopwatch start = Stopwatch.StartNew();
@@ -217,8 +224,8 @@ namespace Movements
                 foreach (var next in to)
                 {
                     currentPath.Add(next.index);//добавить элемент в текущий лист
-                    Console.WriteLine(next.To);
                     InspectPath(next.To, currentPath, ms, ref paths);//рекурсия - для элемента из списка смежности заново запуск
+                    //Console.WriteLine(next.To);
                     currentPath.Remove(next.index);//откат на момент, когда переходы есть 
                 } 
                 return;
