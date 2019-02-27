@@ -41,7 +41,8 @@ namespace Movements
                AdjacencyList[(ms.From)].Add((ms));//откуда и куда
               } 
         }
-    }
+
+        }
         /// <summary>
         /// Движение между отделениями
         /// </summary>
@@ -107,7 +108,7 @@ namespace Movements
                 Stopwatch start = Stopwatch.StartNew();
                 List<int[]> result = FindMovements(begin, ms, graph);
                 start.Stop();
-                Console.WriteLine(start); 
+               // Console.WriteLine(start.ElapsedMilliseconds); 650
 
                 // печать результатов
                 PrintResults(ms, begin, result);
