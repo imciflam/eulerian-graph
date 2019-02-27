@@ -6,6 +6,38 @@ using System.Text;
 
 namespace Movements
 {
+
+    public class Graph<T>
+    {
+        public Dictionary<T, HashSet<T>> AdjacencyList { get; } = new Dictionary<T, HashSet<T>>();
+
+        public Graph(IEnumerable<T> vertices, IEnumerable<Tuple<T, T>> edges)
+        {
+            foreach (var vertex in vertices)
+            {
+                AddVertex(vertex);
+            }
+
+            foreach (var edge in edges)
+            {
+                AddEdge(edge); 
+            }
+        }
+
+        public void AddVertex(T vertex)
+        {
+            AdjacencyList[vertex] = new HashSet<T>();
+        }
+
+        public void AddEdge(Tuple<T, T> edge)
+        {
+            if (AdjacencyList.ContainsKey(edge.Item1) && AdjacencyList.ContainsKey(edge.Item2))
+            {
+                AdjacencyList[edge.Item1].Add(edge.Item2);//откуда и куда
+            }
+        }
+    }
+
     class Program
     {
         /// <summary>
@@ -33,6 +65,29 @@ namespace Movements
         {
             try
             {
+
+                string[] ff = System.IO.File.ReadAllLines(@"..\..\movements2.txt");
+                List<int> x = new List<int>();
+                List<int> y = new List<int>();
+                for (int i = 0; i < ff.Length; i++)
+                {
+                    string[] ss = ff[i].Split(';');
+                    x.Add(Convert.ToInt32(ss[0]));
+                    y.Add(Convert.ToInt32(ss[1]));
+                }
+                List<int> z = x.Concat(y).Distinct().ToList(); 
+                int[] vertices = z.ToArray();
+
+                var edges = new Tuple<int, int>[ff.Length];
+                for (int i = 0; i < ff.Length; i++)
+                {
+                    string[] ss = ff[i].Split(';');
+                    edges[i] = Tuple.Create(Convert.ToInt32(ss[0]), Convert.ToInt32(ss[1]));
+                }
+
+                var graph = new Graph<int>(vertices, edges);
+
+
                 //Movement[] ms = new Movement[]
                 //{
                 //    new Movement() { From = "334", To = "331", index = 0 },
@@ -42,7 +97,7 @@ namespace Movements
                 //};
                 //string begin = "332";
 
-                string[] ff = System.IO.File.ReadAllLines(@"..\..\movements2.txt");
+               // string[] ff = System.IO.File.ReadAllLines(@"..\..\movements2.txt");
                 Movement[] ms = new Movement[ff.Length];
                 for (int i = 0; i < ff.Length; i++)
                 {
@@ -109,13 +164,9 @@ namespace Movements
                             else
                             {
                                 Movement movement = ms[idx];
-                                //Console.Write(movement.From);
-                                //Console.Write(" -> ");
-                                //Console.Write(movement.To);
 
                                 string b = prev == null ? begin : prev.To;
-
-                                // проверка с предыдущим
+                                
                                 if (movement.From != b)
                                 {
                                     Console.Write(" ОШИБКА!");
@@ -123,7 +174,6 @@ namespace Movements
                                 prev = movement;
                             }
                         }
-                        //Console.WriteLine();
                     }
                     if (list.Length > ms.Length)
                     {
@@ -151,35 +201,34 @@ namespace Movements
         }
         static void InspectPath(string from, List<int> currentPath, Movement[] ms, ref List<int[]> paths)
         {
-            List<Movement> to = new List<Movement>();//лист кабинетов куда
+            List<Movement> to = new List<Movement>(); 
+            
             foreach (var m in ms)
             {
                 if (from == m.From && !currentPath.Contains(m.index))
                 {
-                    to.Add(m);
+                    to.Add(m);//список смежности для текущей ноды без повторов проходов предыдущей
                 }
-            }
-
-            if (to.Count == 0)//больше некуда идти, 30 элементов
+            }  
+            if (to.Count == 0)//в список смежности больше нечего добавить, все переходы использованы
             {
-                if (currentPath.Count == ms.Length)
+                if (currentPath.Count == ms.Length)//если длина 30
                 {
                     paths.Add(currentPath.ToArray());//добавить в лист проходов
                 }
                 else
                 {
-                    return;
+                    return;//вернуться для отката на момент, когда переходы есть
                 }
             }
             else
             {
                 foreach (var next in to)
                 {
-                    currentPath.Add(next.index);//добавить все элементы в текущий лист
-                    InspectPath(next.To, currentPath, ms, ref paths);//следующий - фром другой
-                    currentPath.Remove(next.index);
-                }
-
+                    currentPath.Add(next.index);//добавить элемент в текущий лист
+                    InspectPath(next.To, currentPath, ms, ref paths);//рекурсия - для элемента из списка смежности заново запуск
+                    currentPath.Remove(next.index);//откат на момент, когда переходы есть 
+                } 
                 return;
             }
         }
