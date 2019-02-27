@@ -86,18 +86,7 @@ namespace Movements
                 }
 
                 var graph = new Graph<int>(vertices, edges);
-
-
-                //Movement[] ms = new Movement[]
-                //{
-                //    new Movement() { From = "334", To = "331", index = 0 },
-                //    new Movement() { From = "331", To = "334", index = 1 },
-                //    new Movement() { From = "332", To = "331", index = 2 },
-                //    //new Movement() { From = "125", To = "112", index = 4 }
-                //};
-                //string begin = "332";
-
-               // string[] ff = System.IO.File.ReadAllLines(@"..\..\movements2.txt");
+                 
                 Movement[] ms = new Movement[ff.Length];
                 for (int i = 0; i < ff.Length; i++)
                 {
@@ -200,16 +189,18 @@ namespace Movements
             return paths;
         }
         static void InspectPath(string from, List<int> currentPath, Movement[] ms, ref List<int[]> paths)
-        {
+        { 
             List<Movement> to = new List<Movement>(); 
             
-            foreach (var m in ms)
+            foreach (var m in ms)//для каждого элемента массива
             {
-                if (from == m.From && !currentPath.Contains(m.index))
+                if (from == m.From && !currentPath.Contains(m.index))//если текущая нода равна полю фром элемента массива и индекс этого элемента массива не содержится
                 {
                     to.Add(m);//список смежности для текущей ноды без повторов проходов предыдущей
-                }
-            }  
+                    //
+                    
+                } 
+            }
             if (to.Count == 0)//в список смежности больше нечего добавить, все переходы использованы
             {
                 if (currentPath.Count == ms.Length)//если длина 30
@@ -226,6 +217,7 @@ namespace Movements
                 foreach (var next in to)
                 {
                     currentPath.Add(next.index);//добавить элемент в текущий лист
+                    Console.WriteLine(next.To);
                     InspectPath(next.To, currentPath, ms, ref paths);//рекурсия - для элемента из списка смежности заново запуск
                     currentPath.Remove(next.index);//откат на момент, когда переходы есть 
                 } 
