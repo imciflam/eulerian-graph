@@ -32,14 +32,13 @@ namespace Movements
         public void AddVertex(int vertex)
         {
             AdjacencyList[vertex] = new HashSet<Movement>();
-        }
+        } 
 
         public void AddEdge(Movement ms)
-        { 
-                Console.WriteLine(ms.From);//nenf
-              if (AdjacencyList.ContainsKey(Int32.Parse(ms.From)) && AdjacencyList.ContainsKey(Int32.Parse(ms.To)))
+        {  
+              if (AdjacencyList.ContainsKey((ms.From)) && AdjacencyList.ContainsKey((ms.To)))
               {
-               AdjacencyList[Int32.Parse(ms.From)].Add((ms));//откуда и куда
+               AdjacencyList[(ms.From)].Add((ms));//откуда и куда
               } 
         }
     }
@@ -51,11 +50,11 @@ namespace Movements
             /// <summary>
             /// Отделение откуда
             /// </summary>
-            public string From;
+            public int From;
             /// <summary>
             /// Отделение куда
             /// </summary>
-            public string To;
+            public int To;
             /// <summary>
             /// Индекс перехода
             /// </summary>
@@ -94,18 +93,19 @@ namespace Movements
                 for (int i = 0; i < ff.Length; i++)
                 {
                     string[] ss = ff[i].Split(';');
-                    ms[i] = new Movement() { From = ss[0], To = ss[1], index = i };
+                    ms[i] = new Movement() { From = Int32.Parse(ss[0]), To = Int32.Parse(ss[1]), index = i };
                 }
-                string begin = ms[0].From;
+                int begin = ms[0].From;
 
 
 
                 var graph = new Graph<int>(vertices, ms);
-                 
 
+               // Console.WriteLine(graph.GetType());
+                
                 // поиск вариантов переходов
                 Stopwatch start = Stopwatch.StartNew();
-                List<int[]> result = FindMovements(begin, ms);
+                List<int[]> result = FindMovements(begin, ms, graph);
                 start.Stop();
                 Console.WriteLine(start); 
 
@@ -127,7 +127,7 @@ namespace Movements
         /// <param name="ms">Движения между отделениями</param>
         /// <param name="begin">Первое отделение (откуда старт)</param>
         /// <param name="result">Результат выполнения функции FindMovements()</param>
-        static void PrintResults(Movement[] ms, string begin, List<int[]> result)
+        static void PrintResults(Movement[] ms, int begin, List<int[]> result)
         {
             Console.WriteLine(result.Count);
             //return;
@@ -161,7 +161,7 @@ namespace Movements
                             {
                                 Movement movement = ms[idx];
 
-                                string b = prev == null ? begin : prev.To;
+                                int b = prev == null ? begin : prev.To;
                                 
                                 if (movement.From != b)
                                 {
@@ -187,27 +187,31 @@ namespace Movements
         /// <param name="firstDivision">Первое отделение (откуда старт)</param>
         /// <param name="ms">Движения между отделениями</param>
         /// <returns>Результат в виде списка индексов переходов между отделениями в исходном массиве</returns>
-        static List<int[]> FindMovements(string firstDivision, Movement[] ms)
+        static List<int[]> FindMovements(int firstDivision, Movement[] ms, Graph<int> graph)
         {
-            string from = firstDivision;//начало обхода
+            int from = firstDivision;//начало обхода
             List<int[]> paths = new List<int[]>();//лист массивов проходов
             var currentPath = new List<int>();//саблист текущего обхода
-            InspectPath(from, currentPath, ms, ref paths); 
+            InspectPath(from, currentPath, ms, ref paths, graph); 
             return paths;
         }
-        static void InspectPath(string from, List<int> currentPath, Movement[] ms, ref List<int[]> paths)
+        static void InspectPath(int from, List<int> currentPath, Movement[] ms, ref List<int[]> paths, Graph<int> graph)
         { 
-            List<Movement> to = new List<Movement>(); 
-            
+            List<Movement> to = new List<Movement>();
+
+            //var a = (graph.AdjacencyList[Int32.Parse(ms[0].From)]); 
+             
+            //Console.WriteLine(a.GetType());
             foreach (var m in ms)//для каждого элемента массива
             {
                 if (from == m.From && !currentPath.Contains(m.index))//если текущая нода равна полю фром элемента массива и индекс этого элемента массива не содержится
                 {
                     to.Add(m);//список смежности для текущей ноды без повторов проходов предыдущей
+                    //Console.WriteLine(m.index);
                     //
-                    
+
                 } 
-            }
+            } 
             if (to.Count == 0)//в список смежности больше нечего добавить, все переходы использованы
             {
                 if (currentPath.Count == ms.Length)//если длина 30
@@ -224,7 +228,7 @@ namespace Movements
                 foreach (var next in to)
                 {
                     currentPath.Add(next.index);//добавить элемент в текущий лист
-                    InspectPath(next.To, currentPath, ms, ref paths);//рекурсия - для элемента из списка смежности заново запуск
+                    InspectPath(next.To, currentPath, ms, ref paths, graph);//рекурсия - для элемента из списка смежности заново запуск
                     //Console.WriteLine(next.To);
                     currentPath.Remove(next.index);//откат на момент, когда переходы есть 
                 } 
