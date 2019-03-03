@@ -1,164 +1,226 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
-namespace Vitacore
+namespace Movements
 {
+
+
+
     class Program
     {
-         
-            public static class Globals
+
+        class Graph<T>
+        {
+            public Dictionary<int, HashSet<Movement>> AdjacencyList { get; } = new Dictionary<int, HashSet<Movement>>();
+
+            public Graph(IEnumerable<int> vertices, IEnumerable<Movement> ms)
             {
-                public static bool vis = false; // Modifiable
-            }
-
-
-        //копировать массивы как вариант 
-            public class Graph<T>
-            { 
-                public Dictionary<T, HashSet<T>> AdjacencyList { get; } = new Dictionary<T, HashSet<T>>();
-
-                public Graph(IEnumerable<T> vertices, IEnumerable<Tuple<T, T>> edges)
+                foreach (var vertex in vertices)
                 {
-                    foreach (var vertex in vertices)
-                    {
-                        AddVertex(vertex);
-                        Console.WriteLine(vertex);
-                    }
-
-                    foreach (var edge in edges)
-                    {
-                        AddEdge(edge);
-                        Console.WriteLine(edge);
-                    }
+                    AddVertex(vertex);
                 }
 
-                public void AddVertex(T vertex)
+                foreach (var edge in ms)
                 {
-                    AdjacencyList[vertex] = new HashSet<T>();
-                }
-
-                public void AddEdge(Tuple<T, T> edge)
-                {
-                    if (AdjacencyList.ContainsKey(edge.Item1) && AdjacencyList.ContainsKey(edge.Item2))
-                    {
-                        AdjacencyList[edge.Item1].Add(edge.Item2);//откуда и куда
-                    }
+                    AddEdge(edge);
                 }
             }
 
-         
-            public static void Main(string[] args)
+            public void AddVertex(int vertex)
             {
-             
-               string[] ff = System.IO.File.ReadAllLines(@"..\..\movements2.txt"); 
-               List<int> x = new List<int>();
-               List<int> y = new List<int>();
-               for (int i = 0; i < ff.Length; i++)
+                AdjacencyList[vertex] = new HashSet<Movement>();
+            }
+
+            public void AddEdge(Movement ms)
+            {
+                if (AdjacencyList.ContainsKey((ms.From)) && AdjacencyList.ContainsKey((ms.To)))
                 {
-                    string[] ss = ff[i].Split(';'); 
+                    AdjacencyList[(ms.From)].Add((ms));//откуда и куда
+                }
+            }
+
+        }
+        /// <summary>
+        /// Движение между отделениями
+        /// </summary>
+        class Movement
+        {
+            /// <summary>
+            /// Отделение откуда
+            /// </summary>
+            public int From;
+            /// <summary>
+            /// Отделение куда
+            /// </summary>
+            public int To;
+            /// <summary>
+            /// Индекс перехода
+            /// </summary>
+            public int index;
+
+            // Можно добавлять в класс вспомогательные члены
+        }
+
+        static void Main(string[] args)
+        {
+            try
+            {
+
+                string[] ff = System.IO.File.ReadAllLines(@"..\..\movements2.txt");
+                List<int> x = new List<int>();
+                List<int> y = new List<int>();
+                for (int i = 0; i < ff.Length; i++)
+                {
+                    string[] ss = ff[i].Split(';');
                     x.Add(Convert.ToInt32(ss[0]));
                     y.Add(Convert.ToInt32(ss[1]));
                 }
                 List<int> z = x.Concat(y).Distinct().ToList();
-                Console.WriteLine(z.Count);
                 int[] vertices = z.ToArray();
 
                 var edges = new Tuple<int, int>[ff.Length];
                 for (int i = 0; i < ff.Length; i++)
                 {
                     string[] ss = ff[i].Split(';');
-                    edges[i] = Tuple.Create(Convert.ToInt32(ss[0]), Convert.ToInt32(ss[1]));  
-                 }  
-
-                var graph = new Graph<int>(vertices, edges);
-
-                Console.WriteLine(string.Join(", ", BFS(graph, 6)));
-                var path = DFS(graph, 6);
-                Console.WriteLine(string.Join(", ", path));
-                //allDFS(graph, 6);
-                Console.ReadKey();
-            }
-    //6, 19, 4, 14, 20, 15, 10, 28, 7, 23, 0, 3, 22, 25, 13, 17     
-            
-            public static HashSet<T> BFS<T>(Graph<T> graph, T start)
-            { 
-                var visited = new HashSet<T>();//уже посетили, без дублей - O(1)
-
-                if (!graph.AdjacencyList.ContainsKey(start))
-                {
-                    return visited;
+                    edges[i] = Tuple.Create(Convert.ToInt32(ss[0]), Convert.ToInt32(ss[1]));
                 }
 
-                var queue = new Queue<T>();
-                queue.Enqueue(start);
 
-                while (queue.Count > 0)
+
+                var ms = new Movement[ff.Length];//Movement[] 
+                for (int i = 0; i < ff.Length; i++)
                 {
-                    var vertex = queue.Dequeue();
+                    string[] ss = ff[i].Split(';');
+                    ms[i] = new Movement() { From = Int32.Parse(ss[0]), To = Int32.Parse(ss[1]), index = i };
+                }
+                int begin = ms[0].From;
 
-                    if (visited.Contains(vertex))
-                    {
-                        continue;
-                    }
 
-                    visited.Add(vertex);
 
-                    foreach (var neighbor in graph.AdjacencyList[vertex])
-                    {
-                        if (!visited.Contains(neighbor))
-                        {
-                            queue.Enqueue(neighbor);//всех соседей
-                        }
-                    }
-                } 
-                return visited;
+                var graph = new Graph<int>(vertices, ms);
+
+
+                // поиск вариантов переходов
+                Stopwatch start = Stopwatch.StartNew();
+                List<int[]> result = FindMovements(begin, ms, graph);
+                start.Stop();
+
+                // печать результатов
+                PrintResults(ms, begin, result);
+
+                Console.WriteLine("\nГотово!");
+                Console.ReadKey();
             }
-
-
-            public static int allDFS<T>(Graph<T> graph, T start)
+            catch (Exception exp)
             {
-                int pathNumber = 0;
-                DFS(graph, start);
-                return pathNumber;
+                Console.WriteLine(exp.ToString());
             }
+        }
 
-        //6, 4, 10, 15, 23, 22, 25, 14, 28, 3, 19, 20, 7, 13, 17, 0
-        //6, 19, 14, 28, 3, 25, 13, 17, 10, 0, 15, 23, 22, 4, 20, 7 reversed
-            public static HashSet<T> DFS<T>(Graph<T> graph, T start)//visited передавать?
-            { 
-                    var visited = new HashSet<T>();//создается с каждым запуском -> глобально/изменить на свойство?
+        /// <summary>
+        /// Печать результатов
+        /// </summary>
+        /// <param name="ms">Движения между отделениями</param>
+        /// <param name="begin">Первое отделение (откуда старт)</param>
+        /// <param name="result">Результат выполнения функции FindMovements()</param>
+        static void PrintResults(Movement[] ms, int begin, List<int[]> result)
+        {
+            Console.WriteLine(result.Count);
+            //return;
 
-                    if (!graph.AdjacencyList.ContainsKey(start))
+
+            if (result == null || result.Count == 0)
+            {
+                Console.WriteLine("Переходов не найдено.");
+            }
+            else
+            {
+                Console.WriteLine("Найденные переходы:");
+
+                foreach (int[] list in result)
+                {
+                    Movement prev = null;
+                    for (int i = 0; i < ms.Length; i++)
                     {
-                        return visited;
+                        if (i >= list.Length)
+                        {
+                            Console.Write("Ошибка: отсутствует переход.");
+                        }
+                        else
+                        {
+                            int idx = list[i];
+                            if (idx < 0 || idx >= ms.Length)
+                            {
+                                Console.Write("Ошибка: индекс за пределами диапазона.");
+                            }
+                            else
+                            {
+                                Movement movement = ms[idx];
+
+                                int b = prev == null ? begin : prev.To;
+
+                                if (movement.From != b)
+                                {
+                                    Console.Write(" ОШИБКА!");
+                                }
+                                prev = movement;
+                            }
+                        }
+                    }
+                    if (list.Length > ms.Length)
+                    {
+                        Console.WriteLine("Ошибка: имеются лишние переходы.");
                     }
 
-                    var stack = new Stack<T>();
-                    stack.Push(start);
-
-                    while (stack.Count > 0)
-                    {
-                        var vertex = stack.Pop();
-                        Console.WriteLine(vertex);  
-                        visited.Add(vertex);
-                        // graph.AdjacencyList[vertex].Reverse();
-                         foreach (var neighbor in graph.AdjacencyList[vertex])
-                        { 
-                            if (!visited.Contains(neighbor))
-                            { 
-                               stack.Push(neighbor);  
-                               Globals.vis = true;
-                              // DFS(graph, neighbor);
-
-                            }
-                                
-                        }
-
-                     }
-                    return visited;
+                    //Console.WriteLine();
+                }
             }
-         }
-    } 
+        }
+
+        /// <summary>
+        /// Поиск всех вариантов движения, начиная с указанного отделения.
+        /// </summary>
+        /// <param name="firstDivision">Первое отделение (откуда старт)</param>
+        /// <param name="ms">Движения между отделениями</param>
+        /// <returns>Результат в виде списка индексов переходов между отделениями в исходном массиве</returns>
+        static List<int[]> FindMovements(int firstDivision, Movement[] ms, Graph<int> graph)
+        {
+            int from = firstDivision;//начало обхода
+            List<int[]> paths = new List<int[]>();//лист массивов проходов
+            var currentPath = new List<int>();//саблист текущего обхода
+            InspectPath(from, currentPath, ms, ref paths, graph);
+            return paths;
+        }
+        static void InspectPath(int from, List<int> currentPath, Movement[] ms, ref List<int[]> paths, Graph<int> graph)
+        {
+            var ad = (graph.AdjacencyList[from]).ToList();
+            ad.RemoveAll(item => currentPath.Contains(item.index));
+
+
+            if (ad.Count == 0)
+            {
+                if (currentPath.Count == ms.Length)
+                {
+                    paths.Add(currentPath.ToArray());
+                }
+                else
+                {
+                    return;
+                }
+            }
+            else
+            {
+                foreach (var next in ad.ToList())
+                {
+                    currentPath.Add(next.index);
+                    InspectPath(next.To, currentPath, ms, ref paths, graph);
+                    currentPath.Remove(next.index);
+                }
+                return;
+            }
+        }
+    }
+}
