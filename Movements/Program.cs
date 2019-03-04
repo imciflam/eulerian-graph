@@ -199,6 +199,7 @@ namespace Movements
             var ad = (graph.AdjacencyList[from]).ToList();
             ad.RemoveAll(item => currentPath.Contains(item.index));//can move contains to foreach lower, 
             //remove var and linq - will be faster, hashset->list, InUse bool field add, RemoveAt(Count-1) instead Remove
+            //make encapsulation great again
 
 
             if (ad.Count == 0)
