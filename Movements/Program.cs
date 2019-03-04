@@ -197,7 +197,7 @@ namespace Movements
         static void InspectPath(int from, List<int> currentPath, Movement[] ms, ref List<int[]> paths, Graph<int> graph)
         {
             var ad = (graph.AdjacencyList[from]).ToList();
-            ad.RemoveAll(item => currentPath.Contains(item.index));
+            ad.RemoveAll(item => currentPath.Contains(item.index));//can move contains to foreach lower, remove var and linq - will be faster, hashset->list
 
 
             if (ad.Count == 0)
