@@ -7,8 +7,7 @@ using System.Text;
 namespace Movements
 { 
     class Program
-    {
-
+    { 
         class Graph<T>
         {
             public Dictionary<int, List<Movement>> AdjacencyList { get; } = new Dictionary<int, List<Movement>>();
@@ -35,7 +34,7 @@ namespace Movements
             {
                 if (AdjacencyList.ContainsKey((ms.From)) && AdjacencyList.ContainsKey((ms.To)))
                 {
-                    AdjacencyList[(ms.From)].Add((ms));//откуда и куда
+                    AdjacencyList[(ms.From)].Add((ms)); 
                 }
             }
 
@@ -64,7 +63,7 @@ namespace Movements
                 List<int> z = x.Concat(y).Distinct().ToList();
                 int[] vertices = z.ToArray(); 
                  
-                var ms = new Movement[ff.Length];//Movement[] 
+                var ms = new Movement[ff.Length]; 
                 for (int i = 0; i < ff.Length; i++)
                 {
                     string[] ss = ff[i].Split(';');
@@ -73,14 +72,11 @@ namespace Movements
                 int begin = ms[0].From;
 
                 var graph = new Graph<int>(vertices, ms);
-                 
-                // поиск вариантов переходов
+                  
                 Stopwatch start = Stopwatch.StartNew();
                 List<int[]> result = FindMovements(begin, ms, graph);
                 start.Stop();
-
-                // печать результатов        
-
+                 
                 Console.WriteLine(start.ElapsedMilliseconds);
                 PrintResults(ms, begin, result);
                 Console.WriteLine("\nГотово!");
@@ -94,10 +90,7 @@ namespace Movements
 
         static void PrintResults(Movement[] ms, int begin, List<int[]> result)
         {
-            Console.WriteLine(result.Count);
-            //return;
-
-
+            Console.WriteLine(result.Count); 
             if (result == null || result.Count == 0)
             {
                 Console.WriteLine("Переходов не найдено.");
