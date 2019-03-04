@@ -5,10 +5,7 @@ using System.Linq;
 using System.Text;
 
 namespace Movements
-{
-
-
-
+{ 
     class Program
     {
 
