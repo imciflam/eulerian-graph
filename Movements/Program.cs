@@ -26,12 +26,12 @@ namespace Movements
                 }
             }
 
-            public void AddVertex(int vertex)
+            private void AddVertex(int vertex)
             {
                 AdjacencyList[vertex] = new List<Movement>();
             }
 
-            public void AddEdge(Movement ms)
+            private void AddEdge(Movement ms)
             {
                 if (AdjacencyList.ContainsKey((ms.From)) && AdjacencyList.ContainsKey((ms.To)))
                 {
@@ -39,28 +39,14 @@ namespace Movements
                 }
             }
 
-        }
-        /// <summary>
-        /// Движение между отделениями
-        /// </summary>
+        } 
         class Movement
-        {
-            /// <summary>
-            /// Отделение откуда
-            /// </summary>
-            public int From;
-            /// <summary>
-            /// Отделение куда
-            /// </summary>
-            public int To;
-            /// <summary>
-            /// Индекс перехода
-            /// </summary>
+        { 
+            public int From; 
+            public int To; 
             public int index;
-
-            // Можно добавлять в класс вспомогательные члены
-        }
-
+             
+        } 
         static void Main(string[] args)
         {
             try
@@ -76,17 +62,8 @@ namespace Movements
                     y.Add(Convert.ToInt32(ss[1]));
                 }
                 List<int> z = x.Concat(y).Distinct().ToList();
-                int[] vertices = z.ToArray();
-
-                var edges = new Tuple<int, int>[ff.Length];
-                for (int i = 0; i < ff.Length; i++)
-                {
-                    string[] ss = ff[i].Split(';');
-                    edges[i] = Tuple.Create(Convert.ToInt32(ss[0]), Convert.ToInt32(ss[1]));
-                }
-
-
-
+                int[] vertices = z.ToArray(); 
+                 
                 var ms = new Movement[ff.Length];//Movement[] 
                 for (int i = 0; i < ff.Length; i++)
                 {
@@ -113,14 +90,8 @@ namespace Movements
             {
                 Console.WriteLine(exp.ToString());
             }
-        }
+        } 
 
-        /// <summary>
-        /// Печать результатов
-        /// </summary>
-        /// <param name="ms">Движения между отделениями</param>
-        /// <param name="begin">Первое отделение (откуда старт)</param>
-        /// <param name="result">Результат выполнения функции FindMovements()</param>
         static void PrintResults(Movement[] ms, int begin, List<int[]> result)
         {
             Console.WriteLine(result.Count);
@@ -168,24 +139,16 @@ namespace Movements
                     if (list.Length > ms.Length)
                     {
                         Console.WriteLine("Ошибка: имеются лишние переходы.");
-                    }
-
-                    //Console.WriteLine();
+                    } 
                 }
             }
-        }
+        } 
 
-        /// <summary>
-        /// Поиск всех вариантов движения, начиная с указанного отделения.
-        /// </summary>
-        /// <param name="firstDivision">Первое отделение (откуда старт)</param>
-        /// <param name="ms">Движения между отделениями</param>
-        /// <returns>Результат в виде списка индексов переходов между отделениями в исходном массиве</returns>
         static List<int[]> FindMovements(int firstDivision, Movement[] ms, Graph<int> graph)
         {
-            int from = firstDivision;//начало обхода
-            List<int[]> paths = new List<int[]>();//лист массивов проходов
-            List<int> currentPath = new List<int>();//саблист текущего обхода
+            int from = firstDivision;
+            List<int[]> paths = new List<int[]>();
+            List<int> currentPath = new List<int>();
             InspectPath(from, currentPath, ms, ref paths, graph);
             return paths;
         }
