@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -11,7 +11,7 @@ namespace Movements
 
         class Graph<T>
         {
-            public Dictionary<int, HashSet<Movement>> AdjacencyList { get; } = new Dictionary<int, HashSet<Movement>>();
+            public Dictionary<int, List<Movement>> AdjacencyList { get; } = new Dictionary<int, List<Movement>>();
 
             public Graph(IEnumerable<int> vertices, IEnumerable<Movement> ms)
             {
@@ -28,7 +28,7 @@ namespace Movements
 
             public void AddVertex(int vertex)
             {
-                AdjacencyList[vertex] = new HashSet<Movement>();
+                AdjacencyList[vertex] = new List<Movement>();
             }
 
             public void AddEdge(Movement ms)
@@ -95,19 +95,17 @@ namespace Movements
                 }
                 int begin = ms[0].From;
 
-
-
                 var graph = new Graph<int>(vertices, ms);
-
-
+                 
                 // поиск вариантов переходов
                 Stopwatch start = Stopwatch.StartNew();
                 List<int[]> result = FindMovements(begin, ms, graph);
                 start.Stop();
 
-                // печать результатов
-                PrintResults(ms, begin, result);
+                // печать результатов        
 
+                Console.WriteLine(start.ElapsedMilliseconds);
+                PrintResults(ms, begin, result);
                 Console.WriteLine("\nГотово!");
                 Console.ReadKey();
             }
@@ -187,33 +185,25 @@ namespace Movements
         {
             int from = firstDivision;//начало обхода
             List<int[]> paths = new List<int[]>();//лист массивов проходов
-            var currentPath = new List<int>();//саблист текущего обхода
+            List<int> currentPath = new List<int>();//саблист текущего обхода
             InspectPath(from, currentPath, ms, ref paths, graph);
             return paths;
         }
         static void InspectPath(int from, List<int> currentPath, Movement[] ms, ref List<int[]> paths, Graph<int> graph)
-        {
-            var ad = (graph.AdjacencyList[from]).ToList();
-            ad.RemoveAll(item => currentPath.Contains(item.index));//can move contains to foreach lower, 
-            //remove var and linq - will be faster, hashset->list, InUse bool field add, RemoveAt(Count-1) instead Remove
-            //make encapsulation great again
-
-
-            if (ad.Count == 0)
+        { 
+            if (currentPath.Count == ms.Length)
             {
-                if (currentPath.Count == ms.Length)
-                {
-                    paths.Add(currentPath.ToArray());
-                }
-                else
-                {
-                    return;
-                }
-            }
+                paths.Add(currentPath.ToArray());
+            } 
             else
             {
-                foreach (var next in ad.ToList())
+                List<Movement> ad = graph.AdjacencyList[from];
+                foreach (Movement next in ad.ToList())
                 {
+                    if (currentPath.Contains(next.index))
+                    {
+                        continue;
+                    }
                     currentPath.Add(next.index);
                     InspectPath(next.To, currentPath, ms, ref paths, graph);
                     currentPath.Remove(next.index);
