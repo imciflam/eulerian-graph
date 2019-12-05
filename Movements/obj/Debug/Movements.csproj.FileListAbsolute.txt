@@ -19,3 +19,10 @@ C:\Users\x\Documents\GitHub\moar-structures\Movements\obj\Debug\Movements.csproj
 C:\Users\x\Documents\GitHub\moar-structures\Movements\obj\Debug\Movements.csproj.CoreCompileInputs.cache
 C:\Users\x\Documents\GitHub\moar-structures\Movements\obj\Debug\Movements.exe
 C:\Users\x\Documents\GitHub\moar-structures\Movements\obj\Debug\Movements.pdb
+C:\Users\Vitalia\Documents\GitHub\eulerian-graph\Movements\bin\Debug\Movements.exe.config
+C:\Users\Vitalia\Documents\GitHub\eulerian-graph\Movements\bin\Debug\Movements.exe
+C:\Users\Vitalia\Documents\GitHub\eulerian-graph\Movements\bin\Debug\Movements.pdb
+C:\Users\Vitalia\Documents\GitHub\eulerian-graph\Movements\obj\Debug\Movements.csprojResolveAssemblyReference.cache
+C:\Users\Vitalia\Documents\GitHub\eulerian-graph\Movements\obj\Debug\Movements.csproj.CoreCompileInputs.cache
+C:\Users\Vitalia\Documents\GitHub\eulerian-graph\Movements\obj\Debug\Movements.exe
+C:\Users\Vitalia\Documents\GitHub\eulerian-graph\Movements\obj\Debug\Movements.pdb
